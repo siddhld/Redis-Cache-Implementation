@@ -1,14 +1,14 @@
 # Redis-Cache-Implementation
 
-## Overview
+# Overview
 
 This is a Spring Boot application that manages persons and their addresses. It uses Redis for caching to improve performance by reducing the number of database calls. This document provides an overview of how Redis is configured and explains the caching annotations used in the project.
 
-## Redis Configuration
+# Redis Configuration
 
 Redis is an in-memory data structure store, used as a database, cache, and message broker. In this project, Redis is configured to cache data to speed up responses from the service.
 
-### Redis Configuration in the Project
+## Redis Configuration in the Project
 
 The Redis configuration is defined in the `RedisConfig` class. Here's a breakdown of the configuration:
 
@@ -24,7 +24,7 @@ The Redis configuration is defined in the `RedisConfig` class. Here's a breakdow
    }
 
 
-2. # Redis Template: Defines how data is serialized and deserialized when interacting with Redis.
+2. ## Redis Template: Defines how data is serialized and deserialized when interacting with Redis.
    ```java
 
    @Bean
@@ -39,7 +39,7 @@ The Redis configuration is defined in the `RedisConfig` class. Here's a breakdow
    }
 
 
-3. # Cache Manager: Manages the cache configuration, including setting the Time-To-Live (TTL) for cache entries.
+3. ## Cache Manager: Manages the cache configuration, including setting the Time-To-Live (TTL) for cache entries.
    ```java
    @Bean
    public CacheManager cacheManager(LettuceConnectionFactory redisConnectionFactory) {
