@@ -58,7 +58,7 @@ The Redis configuration is defined in the `RedisConfig` class. Here's a breakdow
 # Cache Annotations
 Spring provides several annotations to manage caching. Here are the ones used in this project:
 
-1. ## @Cacheable: Indicates that the result of a method call should be cached. If the same method is called with the same parameters, the cached result is returned instead of executing the method.
+1. ### @Cacheable: Indicates that the result of a method call should be cached. If the same method is called with the same parameters, the cached result is returned instead of executing the method.
    ```java
    @Cacheable(value = "persons")
    public List<Person> getAll() throws NoRecordsAvaliable {
@@ -66,7 +66,7 @@ Spring provides several annotations to manage caching. Here are the ones used in
    }
 
 
-2. ## @CacheEvict: Indicates that one or more entries should be removed from the cache. This is typically used when data is updated or deleted, ensuring that stale data is not served from the cache.
+2. ### @CacheEvict: Indicates that one or more entries should be removed from the cache. This is typically used when data is updated or deleted, ensuring that stale data is not served from the cache.
    ```java
    @CacheEvict(value = "persons", allEntries = true)
    public Person save(@RequestBody Person person) throws DataMatchedException {
@@ -74,7 +74,7 @@ Spring provides several annotations to manage caching. Here are the ones used in
    }
 
 
-3. ## @Caching: Allows multiple caching operations to be applied to a method. This can include a combination of @Cacheable, @CacheEvict, and @CachePut.
+3. ### @Caching: Allows multiple caching operations to be applied to a method. This can include a combination of @Cacheable, @CacheEvict, and @CachePut.
    ```java
    @Caching(evict = {
        @CacheEvict(value = "person", key = "#id"),
