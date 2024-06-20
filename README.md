@@ -24,62 +24,63 @@ The Redis configuration is defined in the `RedisConfig` class. Here's a breakdow
    }
 
 
-# Redis Template: Defines how data is serialized and deserialized when interacting with Redis.
+2. # Redis Template: Defines how data is serialized and deserialized when interacting with Redis.
+   ```java
 
-@Bean
-public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
-    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-    redisTemplate.setConnectionFactory(redisConnectionFactory);
-    redisTemplate.setKeySerializer(new StringRedisSerializer());
-    redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-    redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-    return redisTemplate;
-}
+   @Bean
+   public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
+       RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+       redisTemplate.setConnectionFactory(redisConnectionFactory);
+       redisTemplate.setKeySerializer(new StringRedisSerializer());
+       redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+       redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+       redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+       return redisTemplate;
+   }
 
 
-# Cache Manager: Manages the cache configuration, including setting the Time-To-Live (TTL) for cache entries.
-
-@Bean
-public CacheManager cacheManager(LettuceConnectionFactory redisConnectionFactory) {
-    RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+3. # Cache Manager: Manages the cache configuration, including setting the Time-To-Live (TTL) for cache entries.
+   ```java
+   @Bean
+   public CacheManager cacheManager(LettuceConnectionFactory redisConnectionFactory) {
+      RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
             .entryTtl(Duration.ofMinutes(60)) // Set TTL for cache entries
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
-    return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
+       return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
             .cacheDefaults(redisCacheConfiguration)
             .build();
-}
+   }
 
 
 
 # Cache Annotations
 Spring provides several annotations to manage caching. Here are the ones used in this project:
 
-## @Cacheable: Indicates that the result of a method call should be cached. If the same method is called with the same parameters, the cached result is returned instead of executing the method.
-
-@Cacheable(value = "persons")
-public List<Person> getAll() throws NoRecordsAvaliable {
-    return personService.getAll();
-}
-
-
-## @CacheEvict: Indicates that one or more entries should be removed from the cache. This is typically used when data is updated or deleted, ensuring that stale data is not served from the cache.
-
-@CacheEvict(value = "persons", allEntries = true)
-public Person save(@RequestBody Person person) throws DataMatchedException {
-    return personService.savePerson(person);
-}
+1. ## @Cacheable: Indicates that the result of a method call should be cached. If the same method is called with the same parameters, the cached result is returned instead of executing the method.
+   ```java
+   @Cacheable(value = "persons")
+   public List<Person> getAll() throws NoRecordsAvaliable {
+      return personService.getAll();
+   }
 
 
-## @Caching: Allows multiple caching operations to be applied to a method. This can include a combination of @Cacheable, @CacheEvict, and @CachePut.
+2. ## @CacheEvict: Indicates that one or more entries should be removed from the cache. This is typically used when data is updated or deleted, ensuring that stale data is not served from the cache.
+   ```java
+   @CacheEvict(value = "persons", allEntries = true)
+   public Person save(@RequestBody Person person) throws DataMatchedException {
+      return personService.savePerson(person);
+   }
 
-@Caching(evict = {
-    @CacheEvict(value = "person", key = "#id"),
-    @CacheEvict(value = "persons", allEntries = true)
-})
-public Person delete(@PathVariable("id") long id) throws DataNotFoundException {
-    return personService.delete(id);
-}
+
+3. ## @Caching: Allows multiple caching operations to be applied to a method. This can include a combination of @Cacheable, @CacheEvict, and @CachePut.
+  ```java
+   @Caching(evict = {
+       @CacheEvict(value = "person", key = "#id"),
+       @CacheEvict(value = "persons", allEntries = true)
+   })
+   public Person delete(@PathVariable("id") long id) throws DataNotFoundException {
+      return personService.delete(id);
+   }
 
